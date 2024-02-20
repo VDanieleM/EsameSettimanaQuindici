@@ -18,57 +18,81 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [postCount, setPostCount] = useState(8);
   const [loading, setLoading] = useState(true);
+  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+    setNoResults(false);
     const timerId = setTimeout(() => {
       axios
         .get(
           `https://o.canada.com/wp-json/wp/v2/posts?search=${searchQuery}&per_page=${postCount}`
         )
         .then((response) => {
-          setPosts(response.data);
-          const authorIds = [
-            ...new Set(response.data.map((post) => post.author)),
-          ];
-          authorIds.forEach((id) => {
-            axios
-              .get(`https://o.canada.com/wp-json/wp/v2/users/${id}`)
-              .then((response) => {
-                setAuthors((prevAuthors) => ({
-                  ...prevAuthors,
-                  [id]: he.decode(response.data.name),
-                }));
-              });
-          });
+          if (response.data.length === 0) {
+            setNoResults(true);
+          } else {
+            setPosts(response.data);
+            const authorIds = [
+              ...new Set(response.data.map((post) => post.author)),
+            ];
+            authorIds.forEach((id) => {
+              axios
+                .get(`https://o.canada.com/wp-json/wp/v2/users/${id}`)
+                .then((response) => {
+                  setAuthors((prevAuthors) => ({
+                    ...prevAuthors,
+                    [id]: he.decode(response.data.name),
+                  }));
+                })
+                .catch((error) => {
+                  console.error(
+                    `There was an error fetching the author with ID ${id}!`,
+                    error
+                  );
+                });
+            });
 
-          const imageIds = [
-            ...new Set(response.data.map((post) => post.featured_media)),
-          ];
-          imageIds.forEach((id) => {
-            axios
-              .get(`https://o.canada.com/wp-json/wp/v2/media/${id}`)
-              .then((response) => {
-                setImages((prevImages) => ({
-                  ...prevImages,
-                  [id]: response.data.source_url,
-                }));
-              });
-          });
+            const imageIds = [
+              ...new Set(response.data.map((post) => post.featured_media)),
+            ];
+            imageIds.forEach((id) => {
+              axios
+                .get(`https://o.canada.com/wp-json/wp/v2/media/${id}`)
+                .then((response) => {
+                  setImages((prevImages) => ({
+                    ...prevImages,
+                    [id]: response.data.source_url,
+                  }));
+                })
+                .catch((error) => {
+                  console.error(
+                    `There was an error fetching the image with ID ${id}!`,
+                    error
+                  );
+                });
+            });
 
-          const categoryIds = [
-            ...new Set(response.data.flatMap((post) => post.categories)),
-          ];
-          categoryIds.forEach((id) => {
-            axios
-              .get(`https://o.canada.com/wp-json/wp/v2/categories/${id}`)
-              .then((response) => {
-                setCategories((prevCategories) => ({
-                  ...prevCategories,
-                  [id]: response.data.name,
-                }));
-              });
-          });
-
+            const categoryIds = [
+              ...new Set(response.data.flatMap((post) => post.categories)),
+            ];
+            categoryIds.forEach((id) => {
+              axios
+                .get(`https://o.canada.com/wp-json/wp/v2/categories/${id}`)
+                .then((response) => {
+                  setCategories((prevCategories) => ({
+                    ...prevCategories,
+                    [id]: response.data.name,
+                  }));
+                })
+                .catch((error) => {
+                  console.error(
+                    `There was an error fetching the category with ID ${id}!`,
+                    error
+                  );
+                });
+            });
+          }
           setLoading(false);
         })
         .catch((error) => {
@@ -97,7 +121,8 @@ const Home = () => {
     return noBrackets;
   };
 
-  const loadMorePosts = () => {
+  const loadMorePosts = (event) => {
+    event.preventDefault();
     setPostCount(postCount + 8);
   };
 
@@ -122,6 +147,10 @@ const Home = () => {
             role="status"
             style={{ width: "3rem", height: "3rem", color: "#198754" }}
           ></div>
+        </div>
+      ) : noResults ? (
+        <div className="d-flex justify-content-center py-5">
+          <p style={{ color: "#198754" }}>Nessun risultato trovato</p>
         </div>
       ) : (
         <Container>
