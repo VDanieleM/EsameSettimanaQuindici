@@ -135,65 +135,63 @@ const Home = () => {
           onChange={(event) => setSearchQuery(event.target.value)}
         />
       </div>
-      <div className="d-flex justify-content-center pb-5">
-        <Button variant="success" onClick={loadMorePosts}>
-          Carica altri post
-        </Button>
-      </div>
-      {loading ? (
-        <div className="d-flex justify-content-center">
-          <div
-            className="spinner-border"
-            role="status"
-            style={{ width: "3rem", height: "3rem", color: "#198754" }}
-          ></div>
-        </div>
-      ) : noResults ? (
-        <div className="d-flex justify-content-center py-5">
-          <p style={{ color: "#198754" }}>Nessun risultato trovato</p>
-        </div>
-      ) : (
-        <Container>
-          <Row xs={1} md={2} lg={4} className="g-4 pb-5">
-            {posts
-              .filter((post) =>
-                removeHTMLTags(post.title.rendered)
-                  .toLowerCase()
-                  .trim()
-                  .includes(searchQuery.toLowerCase().trim())
-              )
-              .reverse()
-              .map((post) => (
-                <Col key={post.id}>
-                  <Card
-                    style={{
-                      width: "18rem",
-                      boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-                      backgroundColor:
-                        "linear-gradient(to bottom, #f9f9f9, #fff)",
-                    }}
-                  >
-                    <Card.Img variant="top" src={images[post.featured_media]} />
-                    <Card.Body>
-                      <Card.Title>
-                        {removeHTMLTags(post.title.rendered)}
-                      </Card.Title>
-                      <Card.Text>
-                        {removeHTMLTags(post.excerpt.rendered)}
-                      </Card.Text>
-                      <Button
-                        variant="success"
-                        onClick={() => handleOpen(post)}
-                      >
-                        Continua a leggere
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-          </Row>
-        </Container>
-      )}
+      <Container>
+        <Row xs={1} md={2} lg={4} className="g-4 pb-5">
+          {posts
+            .filter((post) =>
+              removeHTMLTags(post.title.rendered)
+                .toLowerCase()
+                .trim()
+                .includes(searchQuery.toLowerCase().trim())
+            )
+            .map((post) => (
+              <Col key={post.id}>
+                <Card
+                  style={{
+                    width: "18rem",
+                    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+                    backgroundColor:
+                      "linear-gradient(to bottom, #f9f9f9, #fff)",
+                  }}
+                >
+                  <Card.Img variant="top" src={images[post.featured_media]} />
+                  <Card.Body>
+                    <Card.Title>
+                      {removeHTMLTags(post.title.rendered)}
+                    </Card.Title>
+                    <Card.Text>
+                      {removeHTMLTags(post.excerpt.rendered)}
+                    </Card.Text>
+                    <Button variant="success" onClick={() => handleOpen(post)}>
+                      Continua a leggere
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+        </Row>
+        {loading ? (
+          <>
+            <div className="d-flex justify-content-center pb-5">
+              <div
+                className="spinner-border"
+                role="status"
+                style={{ width: "3rem", height: "3rem", color: "#198754" }}
+              ></div>
+            </div>
+          </>
+        ) : noResults ? (
+          <div className="d-flex justify-content-center py-5">
+            <p style={{ color: "#198754" }}>Nessun risultato trovato</p>
+          </div>
+        ) : (
+          <div className="d-flex justify-content-center pb-5">
+            <Button variant="success" onClick={loadMorePosts}>
+              Carica altri post
+            </Button>
+          </div>
+        )}
+      </Container>
 
       {selectedPost && (
         <Modal show={true} onHide={handleClose}>
