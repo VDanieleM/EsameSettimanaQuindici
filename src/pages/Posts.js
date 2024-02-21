@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
+import { Card, Button, Modal, Row, Col, Container } from "react-bootstrap";
 import he from "he";
 
 const Home = () => {
@@ -140,6 +135,11 @@ const Home = () => {
           onChange={(event) => setSearchQuery(event.target.value)}
         />
       </div>
+      <div className="d-flex justify-content-center pb-5">
+        <Button variant="success" onClick={loadMorePosts}>
+          Carica altri post
+        </Button>
+      </div>
       {loading ? (
         <div className="d-flex justify-content-center">
           <div
@@ -162,6 +162,7 @@ const Home = () => {
                   .trim()
                   .includes(searchQuery.toLowerCase().trim())
               )
+              .reverse()
               .map((post) => (
                 <Col key={post.id}>
                   <Card
@@ -191,11 +192,6 @@ const Home = () => {
                 </Col>
               ))}
           </Row>
-          <div className="d-flex justify-content-center py-5">
-            <Button variant="success" onClick={loadMorePosts}>
-              Carica altri post
-            </Button>
-          </div>
         </Container>
       )}
 
