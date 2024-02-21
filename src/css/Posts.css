@@ -1,0 +1,9 @@
+.modal-body img {
+    max-width: 450px;
+    height: auto;
+  }
+  .modal-body table {
+    max-width: 100%;
+    overflow: auto;
+    display: block;
+  }

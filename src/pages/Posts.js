@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import { Card, Button, Modal, Row, Col, Container } from "react-bootstrap";
 import he from "he";
+import "../css/Posts.css";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -224,17 +225,6 @@ const Home = () => {
                 boxSizing: "border-box",
               }}
             />
-            <style jsx global>{`
-              .modal-body img {
-                max-width: 450px;
-                height: auto;
-              }
-              .modal-body table {
-                max-width: 100%;
-                overflow: auto;
-                display: block;
-              }
-            `}</style>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
